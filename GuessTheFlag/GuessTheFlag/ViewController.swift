@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var countries = [String]()
     var score = 0
     var correctAnswer = 0
+    var questionCounter = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +42,15 @@ class ViewController: UIViewController {
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         
         title = countries[correctAnswer].uppercased() + " | SCORE: \(score)"
+        questionCounter += 1
+        if questionCounter > 10 {
+            showFinalScore()
+            score = 0
+            questionCounter = 0
+            return
+        }
     }
-
+    
     @IBAction func buttonTapped(_ sender: UIButton) {
         var title: String
         
@@ -61,5 +69,11 @@ class ViewController: UIViewController {
         present(ac, animated: true)
     }
     
+    func showFinalScore() {
+        let finalMessage = "Your final score is \(score)."
+        let ac = UIAlertController(title: "Quiz Over", message: finalMessage, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(ac, animated: true)
+    }
+    
 }
-
