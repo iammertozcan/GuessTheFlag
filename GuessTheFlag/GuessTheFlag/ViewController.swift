@@ -45,24 +45,32 @@ class ViewController: UIViewController {
         questionCounter += 1
         if questionCounter > 10 {
             showFinalScore()
-            score = 0
-            questionCounter = 0
             return
         }
     }
     
     @IBAction func buttonTapped(_ sender: UIButton) {
         var title: String
+        var message: String
+        var wrongCountry: String
         
         if sender.tag == correctAnswer {
             title = "Correct"
             score += 1
+            message = "Your score is \(score)"
         } else {
             title = "Wrong"
             score -= 1
+            if countries[sender.tag] == "us" || countries[sender.tag] == "uk" {
+                wrongCountry = countries[sender.tag].uppercased()
+                message = "Wrong! That's the flag of \(wrongCountry)."
+            } else {
+                wrongCountry = countries[sender.tag].capitalized
+                message = "Wrong! That's the flag of \(wrongCountry)."
+            }
         }
         
-        let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
         
@@ -70,9 +78,16 @@ class ViewController: UIViewController {
     }
     
     func showFinalScore() {
-        let finalMessage = "Your final score is \(score)."
+        let finalMessage = """
+        Your final score is \(score). 
+        Press OK to play again.
+        """
         let ac = UIAlertController(title: "Quiz Over", message: finalMessage, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        ac.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            self.score = 0 // Reset score to zero
+            self.questionCounter = 0 // Reset question counter to zero
+            self.askQuestion() // Start a new game
+        })
         present(ac, animated: true)
     }
     
